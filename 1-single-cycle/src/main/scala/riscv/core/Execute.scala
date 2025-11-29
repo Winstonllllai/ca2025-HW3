@@ -91,16 +91,16 @@ class Execute extends Module {
     Seq(
       // TODO: Implement six branch conditions
       // Hint: Compare two register data values based on branch type
-      InstructionsTypeB.beq  -> ?,
-      InstructionsTypeB.bne  -> ?,
+      InstructionsTypeB.beq  -> Mux(io.reg1_data === io.reg2_data, true.B, false.B),
+      InstructionsTypeB.bne  -> Mux(io.reg1_data =/= io.reg2_data, true.B, false.B),
 
       // Signed comparison (need conversion to signed type)
-      InstructionsTypeB.blt  -> ?,
-      InstructionsTypeB.bge  -> ?,
+      InstructionsTypeB.blt  -> Mux(io.reg1_data.asSInt < io.reg2_data.asSInt, true.B, false.B),
+      InstructionsTypeB.bge  -> Mux(io.reg1_data.asSInt >= io.reg2_data.asSInt, true.B, false.B),
 
       // Unsigned comparison
-      InstructionsTypeB.bltu -> ?,
-      InstructionsTypeB.bgeu -> ?
+      InstructionsTypeB.bltu -> Mux(io.reg1_data.asUInt < io.reg2_data.asUInt, true.B, false.B),
+      InstructionsTypeB.bgeu -> Mux(io.reg1_data.asUInt >= io.reg2_data.asUInt, true.B, false.B)
     )
   )
   val isBranch = opcode === InstructionTypes.Branch
@@ -118,18 +118,18 @@ class Execute extends Module {
   // - JALR: (rs1 + immediate) & ~1 (register base, clear LSB for alignment)
   //
   // TODO: Complete the following address calculations
-  val branchTarget = ?
+  val branchTarget = io.instruction_address + io.immediate
 
   val jalTarget    = branchTarget  // JAL and Branch use same calculation method
 
   // JALR address calculation:
   //   1. Add register value and immediate
   //   2. Clear LSB (2-byte alignment)
-  val jalrSum      = ?
+  val jalrSum      = io.reg1_data + io.immediate
 
   // TODO: Clear LSB using bit concatenation
   // Hint: Extract upper bits and append zero
-  val jalrTarget   = ?
+  val jalrTarget   = Cat(jalrSum(Parameters.AddrBits - 1, 1), 0.U(1.W))
 
   val branchTaken = isBranch && branchCondition
   io.if_jump_flag := branchTaken || isJal || isJalr

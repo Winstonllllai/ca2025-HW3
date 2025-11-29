@@ -20,13 +20,14 @@ project/plugins/project/
 hs_err_pid*
 
 ### IDE and tool metadata
-.project
+project
 .cproject
 .classpath
 .externalToolBuilders/
 *.launch
 .vscode/
 .metals/
+.bloop/
 
 ### OS cruft
 .DS_Store
