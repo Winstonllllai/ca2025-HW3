@@ -170,5 +170,14 @@ class PipelineProgramTest extends AnyFlatSpec with ChiselScalatestTester {
         c.io.mem_debug_read_data.expect(0x2022L.U)
       }
     }
+    it should "solve hanoi tower (3 disks)" in {
+      runProgram("hanoi.asmbin", cfg) { c =>
+        c.clock.setTimeout(0)
+        c.clock.step(50000)
+        c.io.regs_debug_read_address.poke(8.U)
+        c.clock.step()
+        c.io.regs_debug_read_data.expect(8.U)
+      }
+    }
   }
 }
