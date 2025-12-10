@@ -162,31 +162,31 @@ class Control extends Module {
   // detection logic implemented above
   //
   // Q1: Why do we need to stall for load-use hazards?
-  // A: [Student answer here]
+  // A: Data from a Load instruction is only obtained in the MEM stage. If the very next instruction needs to use this value in the ID/EX stage, it cannot be forwarded in time. The pipeline must stall for one cycle to wait for the data.
   // Hint: Consider data dependency and forwarding limitations
   //
   // Q2: What is the difference between "stall" and "flush" operations?
-  // A: [Student answer here]
+  // A: Stall freezes the pipeline, keeping the current state (PC remains unchanged) to wait for data. Flush clears the pipeline registers, discarding the current instruction (turning it into a NOP) to handle incorrect predictions or insert bubbles.
   // Hint: Compare their effects on pipeline registers and PC
   //
   // Q3: Why does jump instruction with register dependency need stall?
-  // A: [Student answer here]
+  // A: The jump target is calculated in the ID stage. If the dependent register value is still being calculated or read in the EX or MEM stage, the ID stage cannot access the correct value immediately, requiring a stall.
   // Hint: When is jump target address available?
   //
   // Q4: In this design, why is branch penalty only 1 cycle instead of 2?
-  // A: [Student answer here]
+  // A: Because this design uses ID stage branch resolution. Once a jump is decided in the ID (2nd) stage, only the incorrectly fetched instruction in the IF stage needs to be flushed, resulting in a 1-cycle penalty.
   // Hint: Compare ID-stage vs EX-stage branch resolution
   //
   // Q5: What would happen if we removed the hazard detection logic entirely?
-  // A: [Student answer here]
+  // A: Data hazards would result in reading old values, and control hazards would cause the execution of instructions from the wrong path, causing the CPU to malfunction.
   // Hint: Consider data hazards and control flow correctness
   //
   // Q6: Complete the stall condition summary:
   // Stall is needed when:
-  // 1. ? (EX stage condition)
-  // 2. ? (MEM stage condition)
+  // 1. A Load-Use hazard occurs, or an ID jump instruction depends on an EX  (EX stage condition)
+  // 2. An ID jump instruction depends on a MEM stage Load result. (MEM stage condition)
   //
   // Flush is needed when:
-  // 1. ? (Branch/Jump condition)
+  // 1. A branch is taken or a jump is executed in the ID stage. (Branch/Jump condition)
   //
 }

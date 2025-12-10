@@ -158,7 +158,7 @@ class mycpu(pluginTemplate):
         batch_log = os.path.join(self.work_dir, 'batch_test.log')
 
         # Run all tests with real-time progress feedback
-        cmd = f'cd {parent_dir} && timeout 3600 sbt --batch "project {sbt_project_name}" "testOnly riscv.compliance.ComplianceTest" 2>&1'
+        cmd = f'cd {parent_dir} && sbt --batch "project {sbt_project_name}" "testOnly riscv.compliance.ComplianceTest" 2>&1'
         logger.debug(f'Running batch test: {cmd}')
 
         try:
@@ -166,7 +166,7 @@ class mycpu(pluginTemplate):
             test_counter = 0
 
             # Stream SBT output with progress indicators
-            proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            proc = subprocess.Popen(cmd, shell=True, executable='/bin/zsh', stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
 
             with open(batch_log, 'w') as log_file:
                 for line in proc.stdout:
